@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AdventureJar.Web.Api
 {
@@ -27,6 +28,21 @@ namespace AdventureJar.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "AdventureJar.Web.Api",
+                    Description = ".NET Core Web API integrating with Amazon DynamoDB",
+                    Contact = new Contact
+                    {
+                        Name = "Heinrich Venter",
+                        Email = "Heini141@outlook.com",
+                        Url = "https://github.com/Heinrichv"
+                    }
+                });
+            });
             services.AddCors();
             services.AddMemoryCache();
 
@@ -43,6 +59,13 @@ namespace AdventureJar.Web.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdventureJar.Web.Api");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseMvc();
         }

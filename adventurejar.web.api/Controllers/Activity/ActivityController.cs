@@ -53,7 +53,7 @@ namespace AdventureJar.Web.Api.Controllers.Activity
         [HttpPost("api/activity")]
         public async Task<IActionResult> AddActivity([FromBody] ActivityModel request)
         {
-            request.ImageUrl = $"https://{_bucket}.s3.{Amazon.RegionEndpoint.EUWest1.SystemName}.amazonaws.com/{request.Id}";
+            request.ImageUrl = $"https://d2am33tdkempau.cloudfront.net/{request.Id}";
 
             Document document = Document.FromJson(Newtonsoft.Json.JsonConvert.SerializeObject(request));
             await this._activityTable.PutItemAsync(document);
@@ -74,7 +74,7 @@ namespace AdventureJar.Web.Api.Controllers.Activity
 
             return this.Ok(new AddActivityImageResponse
             {
-                Url = $"https://{_bucket}.s3.{Amazon.RegionEndpoint.EUWest1.SystemName}.amazonaws.com/{id}"
+                Url = $"https://d2am33tdkempau.cloudfront.net/{id}"
             });
         }
         
