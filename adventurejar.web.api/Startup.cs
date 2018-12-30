@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace adventurejar.web.api
+namespace AdventureJar.Web.Api
 {
     public class Startup
     {

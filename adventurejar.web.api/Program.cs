@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace adventurejar.web.api
+namespace AdventureJar.Web.Api
 {
     public class Program
     {

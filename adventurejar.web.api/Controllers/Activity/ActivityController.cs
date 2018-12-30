@@ -8,22 +8,22 @@ using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace adventurejar.web.api.Controllers.Activity
+namespace AdventureJar.Web.Api.Controllers.Activity
 {
     [ApiController]
     public class ActivityController : ControllerBase
     {
-        private readonly IAmazonDynamoDB _AmazonDynamoDb;
+        private readonly IAmazonDynamoDB _amazonDynamoDb;
         
         public ActivityController(IAmazonDynamoDB dynamoDb)
         {
-            this._AmazonDynamoDb = dynamoDb;
+            this._amazonDynamoDb = dynamoDb;
         }
 
         [HttpGet("api/activity/all")]
         public async Task<IActionResult> GetAllActivities()
         {
-            ScanResponse res = await this._AmazonDynamoDb.ScanAsync(new ScanRequest("Activity"));
+            ScanResponse res = await this._amazonDynamoDb.ScanAsync(new ScanRequest("Activity"));
 
             if (res.HttpStatusCode == HttpStatusCode.OK)
             {
@@ -36,7 +36,7 @@ namespace adventurejar.web.api.Controllers.Activity
         [HttpGet("api/activity")]
         public async Task<IActionResult> AddActivity()
         {
-            PutItemResponse res = await this._AmazonDynamoDb.PutItemAsync(new PutItemRequest
+            PutItemResponse res = await this._amazonDynamoDb.PutItemAsync(new PutItemRequest
             {
                 TableName = "Activity",
                 Item = new Dictionary<string, AttributeValue>
