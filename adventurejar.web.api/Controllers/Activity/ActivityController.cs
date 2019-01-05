@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using AdventureJar.Web.Api.Models;
+using AdventureJar.Web.Contracts.Models;
+using AdventureJar.Web.Contracts.Response;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
-using Amazon.DynamoDBv2.Model;
 using Amazon.S3;
-using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TinyPng;
-using TinyPng.Responses;
 
 namespace AdventureJar.Web.Api.Controllers.Activity
 {
