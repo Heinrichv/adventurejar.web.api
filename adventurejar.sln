@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdventureJar.Web.Api", "adv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureJar.Web.Contracts", "AdventureJar.Web.Contracts\AdventureJar.Web.Contracts.csproj", "{671F6CD1-0C05-4EBA-9FB6-17FA883BEF51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureJar.Web.DynamoService", "AdventureJar.Web.DynamoService\AdventureJar.Web.DynamoService.csproj", "{0353CFF4-0A98-4014-A2AC-C069585E4AF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{671F6CD1-0C05-4EBA-9FB6-17FA883BEF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671F6CD1-0C05-4EBA-9FB6-17FA883BEF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671F6CD1-0C05-4EBA-9FB6-17FA883BEF51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0353CFF4-0A98-4014-A2AC-C069585E4AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0353CFF4-0A98-4014-A2AC-C069585E4AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0353CFF4-0A98-4014-A2AC-C069585E4AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0353CFF4-0A98-4014-A2AC-C069585E4AF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

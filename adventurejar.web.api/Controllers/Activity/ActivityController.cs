@@ -4,56 +4,42 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AdventureJar.Web.Contracts.Models;
-using AdventureJar.Web.Contracts.Response;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
+using AdventureJar.Web.DynamoService.Contracts;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace AdventureJar.Web.Api.Controllers.Activity
 {
     [ApiController]
     public class ActivityController : ControllerBase
     {
-        private readonly Table _activityTable;
-        private readonly DynamoDBContext _dynamoDbContext;
+        private readonly IActivity _activity;
         private readonly IAmazonS3 _amazonS3;
-        private readonly string _bucket = "adventure-jar-bucket";
+        private readonly IConfiguration _configuration;
         
-        public ActivityController(IAmazonDynamoDB dynamoDb, IAmazonS3 amazonS3)
+        public ActivityController(IAmazonS3 amazonS3, IActivity activity, IConfiguration configuration)
         {
-            this._dynamoDbContext = new DynamoDBContext(dynamoDb);
-            this._activityTable = Table.LoadTable(dynamoDb, "Activity");
             this._amazonS3 = amazonS3;
+            this._activity = activity;
+            this._configuration = configuration;
         }
 
         [HttpGet("api/activity/all")]
         public async Task<IActionResult> GetAllActivities()
         {
-            Search search = this._activityTable.Scan(new Expression());
-
-            List<Document> documentList;
-            do
-            {
-                documentList = await search.GetNextSetAsync();
-            } while (!search.IsDone);
-            
-            List<ActivityModel> activities = documentList.Select(doc => this._dynamoDbContext.FromDocument<ActivityModel>(doc)).ToList();
-            
+            List<ActivityModel> activities = await this._activity.FindAll();
             return this.Ok(activities);
         }
 
         [HttpPost("api/activity")]
         public async Task<IActionResult> AddActivity([FromBody] ActivityModel request)
         {
-            request.ImageUrl = $"https://d2am33tdkempau.cloudfront.net/{request.Id}";
-
-            Document document = Document.FromJson(Newtonsoft.Json.JsonConvert.SerializeObject(request));
-            await this._activityTable.PutItemAsync(document);
-            return this.Ok(request);
+            ActivityModel activity = await this._activity.AddActivity(request);
+            return this.Ok(activity);
         }
 
         [HttpPost("api/activity/image/{id}")]
@@ -64,39 +50,25 @@ namespace AdventureJar.Web.Api.Controllers.Activity
                 await file.CopyToAsync(memoryStream);
                 using (TransferUtility tranUtility = new TransferUtility(this._amazonS3))
                 {
-                    await tranUtility.UploadAsync(memoryStream, _bucket, id);
+                    await tranUtility.UploadAsync(memoryStream, _configuration.GetSection("S3").ToString(), id);
                 }
             }
 
-            return this.Ok(new AddActivityImageResponse
-            {
-                Url = $"https://d2am33tdkempau.cloudfront.net/{id}"
-            });
+            return this.Ok();
         }
         
         [HttpPut("api/activity")]
         public async Task<IActionResult> UpdateActivity([FromBody] ActivityModel request)
         {
-            Document document = Document.FromJson(Newtonsoft.Json.JsonConvert.SerializeObject(request));
-            await this._activityTable.UpdateItemAsync(document);
-            return this.Ok();
+            ActivityModel activity =  await this._activity.UpdateActivity(request);
+            return this.Ok(activity);
         }
-        
+       
         [HttpGet("api/activity/random")]
         public async Task<IActionResult> GetRandomActivity()
         {
-            Search search = this._activityTable.Scan(new Expression());
-
-            List<Document> documentList;
-            do
-            {
-                documentList = await search.GetNextSetAsync();
-            } while (!search.IsDone);
-
-            List<ActivityModel> activities = documentList.Select(doc => this._dynamoDbContext.FromDocument<ActivityModel>(doc)).ToList();
-            
-            int index = new Random(10).Next(0, activities.Count - 1);
-            return this.Ok(activities[index]);
+            ActivityModel activity = await this._activity.SelectRandom();
+            return this.Ok(activity);
         }
     }
 }

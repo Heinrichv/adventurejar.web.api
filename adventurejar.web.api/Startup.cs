@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AdventureJar.Web.DynamoService.Contracts;
+using AdventureJar.Web.DynamoService.Tables;
 using Amazon.DynamoDBv2;
 using Amazon.S3;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace AdventureJar.Web.Api
 {
@@ -50,6 +45,9 @@ namespace AdventureJar.Web.Api
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
             services.AddAWSService<IAmazonS3>();
             services.AddAWSService<IAmazonDynamoDB>();
+
+            services.AddScoped<IActivity, Activity>();
+            services.AddScoped<IAccount, Account>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
