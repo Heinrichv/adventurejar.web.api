@@ -4,8 +4,8 @@
     "profile" : "default",
     "region"  : "eu-west-1",
     "application" : "AdventureJarWebApi",
-    "environment" : "AdventureJarWebApi-dev",
-    "cname"       : "adventurejarwebapi-dev",
+    "environment" : "AdventureJarWebApi",
+    "cname"       : "adventurejarwebapi",
     "solution-stack" : "64bit Windows Server 2016 v1.2.0 running IIS 10.0",
     "environment-type" : "SingleInstance",
     "service-role"     : "aws-elasticbeanstalk-service-role",
@@ -14,5 +14,6 @@
     "key-pair"         : "",
     "iis-website"      : "Default Web Site",
     "app-path"         : "/",
-    "enable-xray"      : false
+    "enable-xray"      : false,
+    "instance-profile" : "aws-elasticbeanstalk-ec2-role"
 }

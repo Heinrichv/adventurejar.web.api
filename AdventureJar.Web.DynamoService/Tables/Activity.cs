@@ -44,6 +44,7 @@ namespace AdventureJar.Web.DynamoService.Tables
 
         public async Task<ActivityModel> AddActivity(ActivityModel model)
         {
+            model.Id = Guid.NewGuid().ToString();
             model.ImageUrl = $"https://d2am33tdkempau.cloudfront.net/{model.Id}";
 
             Document document = Document.FromJson(Newtonsoft.Json.JsonConvert.SerializeObject(model));
