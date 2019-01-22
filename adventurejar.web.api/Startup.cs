@@ -1,4 +1,5 @@
 ﻿using System;
+using AdventureJar.Web.Api.Middleware;
 using AdventureJar.Web.DynamoService.Contracts;
 using AdventureJar.Web.DynamoService.Tables;
 using Amazon.DynamoDBv2;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Remotion.Linq.Clauses.ResultOperators;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace AdventureJar.Web.Api
@@ -24,6 +27,7 @@ namespace AdventureJar.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSwaggerGen(c =>
             {
@@ -40,6 +44,7 @@ namespace AdventureJar.Web.Api
                     }
                 });
             });
+            services.AddResponseCompression();
             services.AddCors();
             services.AddMemoryCache();
             services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
@@ -53,17 +58,31 @@ namespace AdventureJar.Web.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseResponseCompression();
+            app.UseCors(o =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+                o.AllowAnyHeader();
+                o.AllowAnyMethod();
+                o.AllowAnyOrigin();
+            });
+
+            app.UseMiddleware<GlobalExceptionMiddleware>();
+
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdventureJar.Web.Api");
                 c.RoutePrefix = string.Empty;
             });
-            app.UseMvc();
+
+            app.UseMvcWithDefaultRoute();
+
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            loggerFactory.AddAWSProvider(this.Configuration.GetAWSLoggingConfigSection());
+            ILogger<Startup> logger = loggerFactory.CreateLogger<Startup>();
+
+            logger.LogCritical("Application Started");
         }
     }
 }
